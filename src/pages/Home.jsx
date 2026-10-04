@@ -1,36 +1,63 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import MovieSection from "../components/MovieSection";
-import { heroMovies, trendingMovies, trendingShows } from "../data/movie";
 import Footer from "../components/Footer";
+import tmdb from "../services/tmdb";
 
 gsap.registerPlugin(ScrollTrigger);
 
 function Home() {
   const pageRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [movieData, setMovieData] = useState({
+    hero: [],
+    trending: [],
+    nowPlaying: [],
+    topRated: [],
+    popular: [],
+    upcoming: [],
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const trendingSection = [
-    ...trendingMovies.slice(0, 4),
-    ...trendingShows.slice(0, 4),
-  ];
-  const popularSection = [
-    ...trendingMovies.slice(4),
-    ...trendingShows.slice(4),
-  ];
-  const newReleaseSection = trendingMovies.filter(
-    (movie) => movie.year >= 2024,
-  );
-  const topRatedFilms = [...trendingMovies]
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, 12);
-  const topRatedShows = [...trendingShows]
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, 12);
-  const classicsSection = trendingMovies.filter((movie) => movie.year < 2010);
+  // Fetch all movie data on component mount
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch all categories from TMDB
+        const [trending, nowPlaying, topRated, popular, upcoming] =
+          await Promise.all([
+            tmdb.getTrending("movie", "week"),
+            tmdb.getNowPlayingMovies(1),
+            tmdb.getTopRatedMovies(1),
+            tmdb.getPopularMovies(1),
+            tmdb.getUpcomingMovies(1),
+          ]);
+
+        setMovieData({
+          hero: trending.slice(0, 5), // Top 5 trending for hero
+          trending: trending.slice(0, 20),
+          nowPlaying: nowPlaying.slice(0, 20),
+          topRated: topRated.slice(0, 20),
+          popular: popular.slice(0, 20),
+          upcoming: upcoming.slice(0, 20),
+        });
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch movies from TMDB:", err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchMovies();
+  }, []);
 
   useLayoutEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
@@ -91,14 +118,61 @@ function Home() {
     }, pageRef);
 
     return () => context.revert();
-  }, []);
+  }, [loading]);
+
+  // Error state
+  if (error) {
+    return (
+      <div className="site-shell" ref={pageRef}>
+        <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+        <main>
+          <div className="error-state">
+            <div className="error-state__content">
+              <div className="error-state__icon">⚠️</div>
+              <h2>Unable to Load Movies</h2>
+              <p className="error-state__message">{error}</p>
+              <p className="error-state__hint">
+                {error.includes("401") || error.includes("403")
+                  ? "Please check your TMDB API Access Token in the .env file"
+                  : "Please check your internet connection and try again"}
+              </p>
+              <button
+                className="button button--primary"
+                onClick={() => window.location.reload()}
+                type="button"
+              >
+                <span>Retry</span>
+              </button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="site-shell" ref={pageRef}>
+        <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+        <main>
+          <div className="loading-state">
+            <div className="loading-spinner" />
+            <p>Loading amazing content from TMDB...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="site-shell" ref={pageRef}>
       <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
 
       <main>
-        <Hero movies={heroMovies} />
+        <Hero movies={movieData.hero} />
 
         <section className="feature-strip">
           <div className="feature-strip__item">
@@ -110,7 +184,7 @@ function Home() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span>Handpicked daily</span>
+            <span>Powered by TMDB</span>
           </div>
           <div className="feature-strip__divider" />
           <div className="feature-strip__item">
@@ -126,7 +200,7 @@ function Home() {
               />
               <path d="M10 9l5 3-5 3V9z" fill="currentColor" />
             </svg>
-            <span>No autoplay noise</span>
+            <span>Latest releases</span>
           </div>
           <div className="feature-strip__divider" />
           <div className="feature-strip__item">
@@ -145,7 +219,7 @@ function Home() {
                 strokeWidth="1.5"
               />
             </svg>
-            <span>Watch on any device</span>
+            <span>Real-time data</span>
           </div>
         </section>
 
@@ -155,48 +229,48 @@ function Home() {
               <span className="eyebrow">CURATED FOR YOUR NEXT MOVIE NIGHT</span>
               <h2>What to watch tonight</h2>
               <p>
-                Big stories, unforgettable characters, and a little something
-                for every kind of night.
+                Discover the latest movies, trending hits, and timeless classics
+                from The Movie Database.
               </p>
             </div>
           </div>
 
           <MovieSection
-            movies={trendingSection}
-            title="Trending Now"
+            movies={movieData.trending}
+            title="Trending This Week"
             variant="carousel"
           />
 
           <MovieSection
-            movies={newReleaseSection}
-            title="New Releases"
+            movies={movieData.nowPlaying}
+            title="Now Playing in Theaters"
             variant="carousel"
           />
 
           <MovieSection
-            movies={topRatedFilms}
+            movies={movieData.topRated}
             title="Top Rated Films"
             variant="carousel"
           />
 
           <MovieSection
-            movies={topRatedShows}
-            title="Top Rated Series"
+            movies={movieData.popular}
+            title="Popular Right Now"
             variant="carousel"
           />
 
           <MovieSection
-            movies={classicsSection}
-            title="Timeless Classics"
+            movies={movieData.upcoming}
+            title="Coming Soon"
             variant="carousel"
           />
-
-          <MovieSection movies={popularSection} title="Popular Picks" />
         </section>
 
         <section className="closing-note" id="about">
-          <span className="eyebrow">A BETTER KIND OF MOVIE NIGHT</span>
-          <p>Less scrolling. More stories worth staying up for.</p>
+          <span className="eyebrow">POWERED BY TMDB</span>
+          <p>
+            Real movie data, updated daily. Discover what's trending worldwide.
+          </p>
           <a className="text-link" href="#home">
             Back to the top <span aria-hidden="true">↑</span>
           </a>

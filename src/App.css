@@ -6021,3 +6021,147 @@
     padding: 40px 28px;
   }
 }
+
+/* ==============================
+   LOADING & ERROR STATES
+   ============================== */
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.loading-state--inline {
+  min-height: 400px;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgb(184 239 97 / 20%);
+  border-top-color: #b8ef61;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.loading-state p {
+  color: #98928a;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.error-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 60px 20px;
+}
+
+.error-state--inline {
+  min-height: 400px;
+}
+
+.error-state__content {
+  max-width: 540px;
+  padding: 48px 40px;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 20px;
+  background: linear-gradient(
+    135deg,
+    rgb(255 255 255 / 4%) 0%,
+    rgb(255 255 255 / 2%) 100%
+  );
+  text-align: center;
+}
+
+.error-state__icon {
+  font-size: 3.5rem;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+.error-state__content h2,
+.error-state__content h3 {
+  margin-bottom: 16px;
+  color: #f5f1e9;
+  font-size: 1.5rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.error-state__message {
+  margin-bottom: 12px;
+  color: #d94e6a;
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: 'Courier New', monospace;
+}
+
+.error-state__hint {
+  margin-bottom: 28px;
+  color: #98928a;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.error-state__content .button {
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pagination Updates */
+.pagination__info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  color: #cec8ba;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Movie Grid for Movies Page */
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: clamp(16px, 2vw, 24px);
+  margin-bottom: 48px;
+}
+
+@media (max-width: 768px) {
+  .error-state__content {
+    padding: 36px 28px;
+  }
+
+  .movie-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .error-state__content {
+    padding: 32px 24px;
+  }
+  
+  .error-state__icon {
+    font-size: 2.5rem;
+  }
+
+  .movie-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+}
