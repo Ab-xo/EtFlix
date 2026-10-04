@@ -95,9 +95,10 @@ const transformMovie = (movie, type = 'movie') => {
     rating: movie.vote_average ? movie.vote_average.toFixed(1) : '0.0',
     genre: movie.genre_ids ? movie.genre_ids.join(',') : '',
     kind: type === 'tv' ? 'series' : 'film',
-    image: getImageUrl(movie.poster_path, 'poster', 'medium'),
+    poster: getImageUrl(movie.poster_path, 'poster', 'medium'),
     backdrop: getImageUrl(movie.backdrop_path, 'backdrop', 'large'),
-    overview: movie.overview || '',
+    description: movie.overview || '',
+    duration: movie.runtime || null,
     popularity: movie.popularity || 0,
     voteCount: movie.vote_count || 0,
   };
