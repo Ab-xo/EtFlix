@@ -1,4 +1,6 @@
 function MovieCard({ movie, index }) {
+  const genreTags = movie.genre.split(",").slice(0, 2).map((g) => g.trim());
+
   return (
     <article className="movie-card" style={{ "--card-index": index }}>
       <div className="movie-card__poster">
@@ -12,6 +14,22 @@ function MovieCard({ movie, index }) {
         <span className="movie-card__rating">
           <span aria-hidden="true">★</span> {movie.rating}
         </span>
+
+        <span className="movie-card__kind-badge">
+          {movie.kind === "series" ? "Series" : "Film"}
+        </span>
+
+        <div className="movie-card__overlay">
+          <button
+            className="movie-card__play-btn"
+            aria-label={`Play ${movie.title}`}
+            type="button"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </button>
+        </div>
 
         <div className="movie-card__actions">
           <button
@@ -49,10 +67,12 @@ function MovieCard({ movie, index }) {
       <div className="movie-card__info">
         <h3>{movie.title}</h3>
 
-        <p>
-          <span>{movie.year}</span>
-          <span>{movie.genre.split(",")[0]}</span>
-        </p>
+        <div className="movie-card__tags">
+          <span className="movie-card__year">{movie.year}</span>
+          {genreTags.map((tag) => (
+            <span key={tag} className="movie-card__genre-tag">{tag}</span>
+          ))}
+        </div>
       </div>
     </article>
   );
