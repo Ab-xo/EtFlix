@@ -1,11 +1,32 @@
+import { useNavigate } from "react-router-dom";
+
 function MovieCard({ movie, index }) {
+  const navigate = useNavigate();
   const genreTags = movie.genre
     .split(",")
     .slice(0, 2)
     .map((g) => g.trim());
 
+  const handleClick = () => {
+    navigate(`/movie/${movie.id}`);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      navigate(`/movie/${movie.id}`);
+    }
+  };
+
   return (
-    <article className="movie-card" style={{ "--card-index": index }}>
+    <article
+      className="movie-card"
+      style={{ "--card-index": index }}
+      onClick={handleClick}
+      onKeyPress={handleKeyPress}
+      role="button"
+      tabIndex={0}
+    >
       <div className="movie-card__poster">
         <img
           decoding="async"

@@ -171,17 +171,55 @@ export const getTopRatedTVShows = async (page = 1) => {
 };
 
 /**
- * Get movie details
+ * Get movie details with cast, crew, videos, and recommendations
  * @param {number} movieId - Movie ID
  */
 export const getMovieDetails = async (movieId) => {
-  const data = await fetchFromTMDB(`/movie/${movieId}`);
+  const [details, credits, videos, similar, recommendations] = await Promise.all([
+    fetchFromTMDB(`/movie/${movieId}`),
+    fetchFromTMDB(`/movie/${movieId}/credits`),
+    fetchFromTMDB(`/movie/${movieId}/videos`),
+    fetchFromTMDB(`/movie/${movieId}/similar`),
+    fetchFromTMDB(`/movie/${movieId}/recommendations`),
+  ]);
+
   return {
-    ...transformMovie(data, 'movie'),
-    genres: data.genres?.map(g => g.name).join(', ') || '',
-    runtime: data.runtime || 0,
-    tagline: data.tagline || '',
-    releaseDate: data.release_date || '',
+    ...transformMovie(details, 'movie'),
+    genres: details.genres?.map(g => g.name) || [],
+    genresString: details.genres?.map(g => g.name).join(', ') || '',
+    runtime: details.runtime || 0,
+    tagline: details.tagline || '',
+    releaseDate: details.release_date || '',
+    budget: details.budget || 0,
+    revenue: details.revenue || 0,
+    status: details.status || '',
+    originalLanguage: details.original_language || '',
+    productionCompanies: details.production_companies || [],
+    cast: credits.cast?.slice(0, 20).map(person => ({
+      id: person.id,
+      name: person.name,
+      character: person.character,
+      profilePath: getImageUrl(person.profile_path, 'poster', 'small'),
+    })) || [],
+    crew: credits.crew?.filter(person => 
+      ['Director', 'Producer', 'Writer', 'Screenplay'].includes(person.job)
+    ).slice(0, 10).map(person => ({
+      id: person.id,
+      name: person.name,
+      job: person.job,
+      profilePath: getImageUrl(person.profile_path, 'poster', 'small'),
+    })) || [],
+    director: credits.crew?.find(person => person.job === 'Director')?.name || '',
+    videos: videos.results?.filter(v => v.site === 'YouTube').map(video => ({
+      id: video.id,
+      key: video.key,
+      name: video.name,
+      type: video.type,
+      official: video.official,
+    })) || [],
+    trailer: videos.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube') || null,
+    similar: similar.results?.slice(0, 12).map(m => transformMovie(m, 'movie')) || [],
+    recommendations: recommendations.results?.slice(0, 12).map(m => transformMovie(m, 'movie')) || [],
   };
 };
 

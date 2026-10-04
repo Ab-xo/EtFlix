@@ -4,6 +4,9 @@
   padding: 0;
 }
 
+/* Import MovieDetail styles */
+@import url('./styles/MovieDetail.css');
+
 :root {
   color: #f5f1e9;
   background: #0b0c0a;
