@@ -16,6 +16,7 @@ function MoviesPage() {
   const [selectedYear, setSelectedYear] = useState("all");
   const [sortBy, setSortBy] = useState("latest");
   const [currentPage, setCurrentPage] = useState(1);
+  const [viewMode, setViewMode] = useState("grid");
 
   const ITEMS_PER_PAGE = 12;
 
@@ -39,7 +40,6 @@ function MoviesPage() {
   const visibleMovies = useMemo(() => {
     let filtered = allContent.filter((movie) => {
       const matchesType = selectedType === "all" || movie.kind === selectedType;
-
       const matchesGenre =
         selectedGenre === "all" ||
         movie.genre
@@ -48,14 +48,11 @@ function MoviesPage() {
             (genre) =>
               genre.trim().toLowerCase() === selectedGenre.toLowerCase(),
           );
-
       const matchesYear =
         selectedYear === "all" || movie.year === parseInt(selectedYear);
-
       const matchesSearch =
         !normalizedQuery ||
         `${movie.title} ${movie.genre}`.toLowerCase().includes(normalizedQuery);
-
       return matchesType && matchesGenre && matchesYear && matchesSearch;
     });
 
@@ -68,14 +65,7 @@ function MoviesPage() {
     }
 
     return filtered;
-  }, [
-    normalizedQuery,
-    selectedGenre,
-    selectedType,
-    selectedYear,
-    sortBy,
-    allContent,
-  ]);
+  }, [normalizedQuery, selectedGenre, selectedType, selectedYear, sortBy, allContent]);
 
   const totalPages = Math.ceil(visibleMovies.length / ITEMS_PER_PAGE);
   const paginatedMovies = useMemo(() => {
@@ -95,7 +85,8 @@ function MoviesPage() {
   const activeFilterCount =
     (selectedType !== "all" ? 1 : 0) +
     (selectedGenre !== "all" ? 1 : 0) +
-    (selectedYear !== "all" ? 1 : 0);
+    (selectedYear !== "all" ? 1 : 0) +
+    (normalizedQuery ? 1 : 0);
 
   const clearFilters = () => {
     setSelectedType("all");
@@ -104,6 +95,32 @@ function MoviesPage() {
     setSortBy("latest");
     setSearchQuery("");
   };
+
+  const filterPills = [];
+  if (selectedType !== "all") {
+    filterPills.push({
+      label: selectedType === "film" ? "Movies" : "Series",
+      clear: () => setSelectedType("all"),
+    });
+  }
+  if (selectedGenre !== "all") {
+    filterPills.push({
+      label: selectedGenre,
+      clear: () => setSelectedGenre("all"),
+    });
+  }
+  if (selectedYear !== "all") {
+    filterPills.push({
+      label: selectedYear,
+      clear: () => setSelectedYear("all"),
+    });
+  }
+  if (normalizedQuery) {
+    filterPills.push({
+      label: `"${searchQuery}"`,
+      clear: () => setSearchQuery(""),
+    });
+  }
 
   useLayoutEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
@@ -224,7 +241,7 @@ function MoviesPage() {
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
-                Clear filters
+                Clear all
               </button>
             )}
           </div>
@@ -254,8 +271,55 @@ function MoviesPage() {
               </span>
               <span className="filter-results__label">results</span>
             </div>
+
+            <div className="filter-view-toggle">
+              <button
+                aria-label="Grid view"
+                aria-pressed={viewMode === "grid"}
+                className={`filter-view-toggle__btn${viewMode === "grid" ? " is-active" : ""}`}
+                onClick={() => setViewMode("grid")}
+                type="button"
+              >
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+                  <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+                  <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+                  <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+                </svg>
+              </button>
+              <button
+                aria-label="List view"
+                aria-pressed={viewMode === "list"}
+                className={`filter-view-toggle__btn${viewMode === "list" ? " is-active" : ""}`}
+                onClick={() => setViewMode("list")}
+                type="button"
+              >
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="4" width="18" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+                  <rect x="3" y="15" width="18" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
+
+        {filterPills.length > 0 && (
+          <div className="filter-pills">
+            {filterPills.map((pill, i) => (
+              <button
+                key={i}
+                className="filter-pill"
+                onClick={pill.clear}
+                type="button"
+              >
+                <span>{pill.label}</span>
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <main>
@@ -267,12 +331,37 @@ function MoviesPage() {
               Browse the complete EtFlix library. Filter by type, genre, or year
               to find exactly what you're in the mood for.
             </p>
+
+            <div className="movies-search">
+              <svg className="movies-search__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="10.5" cy="10.5" r="7" stroke="currentColor" strokeWidth="2" />
+                <path d="m16 16 5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              <input
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by title or genre..."
+                type="search"
+                value={searchQuery}
+              />
+              {searchQuery && (
+                <button
+                  aria-label="Clear search"
+                  className="movies-search__clear"
+                  onClick={() => setSearchQuery("")}
+                  type="button"
+                >
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="collection-content">
             {paginatedMovies.length > 0 ? (
               <>
-                <div className="movie-grid movie-grid--catalog">
+                <div className={`movie-grid movie-grid--catalog${viewMode === "list" ? " movie-grid--list" : ""}`}>
                   {paginatedMovies.map((movie, index) => (
                     <MovieCard
                       index={index}
