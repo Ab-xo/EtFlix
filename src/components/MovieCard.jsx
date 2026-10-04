@@ -1,5 +1,8 @@
 function MovieCard({ movie, index }) {
-  const genreTags = movie.genre.split(",").slice(0, 2).map((g) => g.trim());
+  const genreTags = movie.genre
+    .split(",")
+    .slice(0, 2)
+    .map((g) => g.trim());
 
   return (
     <article className="movie-card" style={{ "--card-index": index }}>
@@ -70,7 +73,9 @@ function MovieCard({ movie, index }) {
         <div className="movie-card__tags">
           <span className="movie-card__year">{movie.year}</span>
           {genreTags.map((tag) => (
-            <span key={tag} className="movie-card__genre-tag">{tag}</span>
+            <span key={tag} className="movie-card__genre-tag">
+              {tag}
+            </span>
           ))}
         </div>
       </div>

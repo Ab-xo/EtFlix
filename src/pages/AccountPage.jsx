@@ -10,8 +10,13 @@ function AccountPage({ mode }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    if (isSignUp && formData.get("password") !== formData.get("confirm-password")) {
-      setMessage("Those passwords do not match. Please check them and try again.");
+    if (
+      isSignUp &&
+      formData.get("password") !== formData.get("confirm-password")
+    ) {
+      setMessage(
+        "Those passwords do not match. Please check them and try again.",
+      );
       return;
     }
 
@@ -49,8 +54,8 @@ function AccountPage({ mode }) {
               <em>staying for.</em>
             </h1>
             <p>
-              Your next favorite film is out there. Keep the good ones close
-              and find something new for tonight.
+              Your next favorite film is out there. Keep the good ones close and
+              find something new for tonight.
             </p>
             <div className="account-story__collection">
               <span className="account-story__collection-mark">✦</span>
@@ -148,14 +153,17 @@ function AccountPage({ mode }) {
           </form>
 
           {message && (
-            <p aria-live="polite" className="account-form__message" role="status">
+            <p
+              aria-live="polite"
+              className="account-form__message"
+              role="status"
+            >
               {message}
             </p>
           )}
 
           <p className="account-card__switch">
-            {isSignUp ? "Already have an account?" : "New to EtFlix?"}
-            {" "}
+            {isSignUp ? "Already have an account?" : "New to EtFlix?"}{" "}
             <Link to={isSignUp ? "/signin" : "/signup"}>
               {isSignUp ? "Sign in" : "Create an account"}
             </Link>

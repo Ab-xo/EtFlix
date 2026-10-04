@@ -8,7 +8,13 @@ function Brand({ className = "" }) {
         viewBox="0 0 44 44"
       >
         <defs>
-          <linearGradient id="etflix-mark-gradient" x1="7" x2="38" y1="5" y2="40">
+          <linearGradient
+            id="etflix-mark-gradient"
+            x1="7"
+            x2="38"
+            y1="5"
+            y2="40"
+          >
             <stop stopColor="#D8FF9D" />
             <stop offset="1" stopColor="#A9E849" />
           </linearGradient>
@@ -45,7 +51,9 @@ function Brand({ className = "" }) {
         />
       </svg>
       <span className="brand__wordmark">
-        <strong>Et</strong><span>flix</span><i>.</i>
+        <strong>Et</strong>
+        <span>flix</span>
+        <i>.</i>
       </span>
     </a>
   );

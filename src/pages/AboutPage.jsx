@@ -1,12 +1,12 @@
 import { useRef, useLayoutEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { heroMovies } from "../data/movie";
 
 function AboutPage() {
   const pageRef = useRef(null);
+  const navigate = useNavigate();
 
   useLayoutEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
@@ -21,37 +21,37 @@ function AboutPage() {
         stagger: 0.12,
         ease: "power2.out",
       });
-      gsap.from(".about-stats__item", {
-        opacity: 0,
-        y: 20,
-        duration: 0.5,
-        stagger: 0.1,
-        ease: "power2.out",
-        delay: 0.3,
-      });
-      gsap.from(".about-feature", {
+      gsap.from(".about-section", {
         opacity: 0,
         y: 40,
         duration: 0.6,
         stagger: 0.15,
         ease: "power2.out",
-        delay: 0.2,
+        delay: 0.3,
       });
-      gsap.from(".about-timeline__item", {
+      gsap.from(".feature-highlight", {
         opacity: 0,
-        x: -30,
+        y: 30,
         duration: 0.6,
         stagger: 0.12,
         ease: "power2.out",
-        delay: 0.4,
+        scrollTrigger: {
+          trigger: ".about-features",
+          start: "top 75%",
+          once: true,
+        },
       });
-      gsap.from(".about-cta-premium > *", {
+      gsap.from(".about-stats__item", {
         opacity: 0,
-        y: 24,
-        duration: 0.6,
+        scale: 0.9,
+        duration: 0.5,
         stagger: 0.1,
-        ease: "power2.out",
-        delay: 0.5,
+        ease: "back.out(1.7)",
+        scrollTrigger: {
+          trigger: ".about-stats",
+          start: "top 80%",
+          once: true,
+        },
       });
     }, pageRef);
 
@@ -64,133 +64,284 @@ function AboutPage() {
 
       <main>
         <section className="about-page">
+          {/* Hero Section */}
           <div className="about-hero">
-            <div
-              aria-hidden="true"
-              className="about-hero__bg"
-              style={{ backgroundImage: `url("${heroMovies[2].backdrop}")` }}
-            />
-            <div aria-hidden="true" className="about-hero__overlay" />
             <div className="about-hero__content">
               <span className="eyebrow">ABOUT ETFLIX</span>
-              <h1>A better kind of <em>movie night</em></h1>
+              <h1>
+                Streaming <em>reimagined</em> for movie lovers
+              </h1>
               <p>
-                We're building a streaming experience that puts great stories
-                first. Less scrolling, more watching. Thoughtfully picked,
-                always worth the watch.
+                We're not just another streaming service. We're a carefully
+                curated experience designed for people who value quality over
+                quantity, and storytelling over algorithms.
               </p>
-            </div>
-
-            <div className="about-stats">
-              <div className="about-stats__item">
-                <span className="about-stats__number">38+</span>
-                <span className="about-stats__label">Curated Titles</span>
-              </div>
-              <div className="about-stats__divider" />
-              <div className="about-stats__item">
-                <span className="about-stats__number">12</span>
-                <span className="about-stats__label">Genres</span>
-              </div>
-              <div className="about-stats__divider" />
-              <div className="about-stats__item">
-                <span className="about-stats__number">4.9</span>
-                <span className="about-stats__label">Avg Rating</span>
-              </div>
             </div>
           </div>
 
-          <div className="about-features">
-            <div className="about-feature">
-              <div className="about-feature__icon">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6L12 2z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
-                </svg>
-              </div>
+          {/* Mission Section */}
+          <div className="about-mission">
+            <div className="about-mission__content">
+              <span className="eyebrow">OUR MISSION</span>
+              <h2>Bringing great stories to life</h2>
+              <p>
+                In a world drowning in content, EtFlix stands apart. We believe
+                the best streaming experience isn't about having everything —
+                it's about having the right things. Every title on our platform
+                is handpicked by our team of film enthusiasts, ensuring you
+                spend less time scrolling and more time watching what matters.
+              </p>
+              <p>
+                From timeless classics to modern masterpieces, we celebrate
+                cinema in all its forms. Our mission is simple: connect you with
+                stories that move, inspire, and entertain.
+              </p>
+            </div>
+          </div>
+
+          {/* Features Grid */}
+          <div className="about-content">
+            <div className="about-section">
+              <div className="about-section__icon">🎬</div>
               <h2>Curated Collections</h2>
               <p>
-                Every title is handpicked by our team of film enthusiasts. We
-                focus on quality over quantity, bringing you the best movies and
-                series worth your time.
+                Every title on EtFlix is handpicked by our team of film
+                enthusiasts. We focus on quality over quantity, bringing you the
+                best movies and series worth your time. No bloat, no filler —
+                just exceptional storytelling.
               </p>
             </div>
 
-            <div className="about-feature about-feature--accent">
-              <div className="about-feature__icon">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" strokeWidth="1.4" />
-                  <path d="M10 9l5 3-5 3V9z" fill="currentColor" />
-                </svg>
-              </div>
+            <div className="about-section">
+              <div className="about-section__icon">✨</div>
               <h2>Premium Experience</h2>
               <p>
-                A clean, modern interface designed for discovery. No clutter,
-                no autoplay, just a beautiful way to explore and watch great
-                content.
+                Enjoy a clean, modern interface designed for discovery. No
+                clutter, no autoplay, no interruptions — just a beautiful way to
+                explore and watch great content. Every detail is crafted with
+                care.
               </p>
             </div>
 
-            <div className="about-feature">
-              <div className="about-feature__icon">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M12 21l-1.5-1.4C5.4 15.4 2 12.3 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 3.8-3.4 6.9-8.5 11.1L12 21z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
-                </svg>
-              </div>
+            <div className="about-section">
+              <div className="about-section__icon">🌟</div>
               <h2>For Movie Lovers</h2>
               <p>
                 Built by people who love cinema as much as you do. We believe in
                 the power of storytelling and want to help you find your next
-                favorite.
+                favorite. Join a community that appreciates the art of film.
               </p>
             </div>
           </div>
 
-          <div className="about-timeline">
-            <span className="eyebrow about-timeline__eyebrow">OUR JOURNEY</span>
-            <h2 className="about-timeline__title">How we got here</h2>
-
-            <div className="about-timeline__track">
-              <div className="about-timeline__item">
-                <span className="about-timeline__marker" />
-                <span className="about-timeline__year">2023</span>
-                <h3>The idea</h3>
-                <p>Frustrated by endless scrolling on every streaming platform, we set out to build something simpler.</p>
+          {/* Key Features */}
+          <div className="about-features">
+            <div className="about-features__header">
+              <span className="eyebrow">WHAT MAKES US DIFFERENT</span>
+              <h2>Built for how you actually watch</h2>
+            </div>
+            <div className="about-features__grid">
+              <div className="feature-highlight">
+                <div className="feature-highlight__number">01</div>
+                <h3>Smart Recommendations</h3>
+                <p>
+                  Our algorithm learns what you love, not what's trending. Get
+                  personalized suggestions based on your unique taste.
+                </p>
               </div>
-              <div className="about-timeline__item">
-                <span className="about-timeline__marker" />
-                <span className="about-timeline__year">2024</span>
-                <h3>The collection</h3>
-                <p>We began curating our first titles, handpicking films and series that deserved more attention.</p>
+              <div className="feature-highlight">
+                <div className="feature-highlight__number">02</div>
+                <h3>Seamless Streaming</h3>
+                <p>
+                  Crystal-clear 4K streaming with adaptive quality. Watch
+                  anywhere, on any device, without buffering or interruptions.
+                </p>
               </div>
-              <div className="about-timeline__item">
-                <span className="about-timeline__marker" />
-                <span className="about-timeline__year">Today</span>
-                <h3>The experience</h3>
-                <p>EtFlix is live with a growing library, a beautiful interface, and a community of movie lovers.</p>
+              <div className="feature-highlight">
+                <div className="feature-highlight__number">03</div>
+                <h3>No Ads, Ever</h3>
+                <p>
+                  Your movie night shouldn't be interrupted. We're ad-free by
+                  design, so you can immerse yourself completely.
+                </p>
+              </div>
+              <div className="feature-highlight">
+                <div className="feature-highlight__number">04</div>
+                <h3>Offline Downloads</h3>
+                <p>
+                  Take your favorites anywhere. Download titles to watch
+                  offline, perfect for travel or spotty connections.
+                </p>
+              </div>
+              <div className="feature-highlight">
+                <div className="feature-highlight__number">05</div>
+                <h3>Family Friendly</h3>
+                <p>
+                  Create profiles for everyone in your household. Parental
+                  controls ensure kids only see age-appropriate content.
+                </p>
+              </div>
+              <div className="feature-highlight">
+                <div className="feature-highlight__number">06</div>
+                <h3>Cancel Anytime</h3>
+                <p>
+                  No contracts, no commitments. Love it or leave it — we're
+                  confident you'll stay for the content.
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="about-cta-premium">
-            <div
-              aria-hidden="true"
-              className="about-cta-premium__bg"
-              style={{ backgroundImage: `url("${heroMovies[1].backdrop}")` }}
-            />
-            <div aria-hidden="true" className="about-cta-premium__overlay" />
-            <span className="eyebrow">READY TO EXPLORE?</span>
-            <h2>Your next favorite film is waiting</h2>
-            <p>Join thousands of movie enthusiasts already discovering great content.</p>
-            <Link to="/signup" className="button button--primary">
-              <span className="button__play">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z" />
+          {/* Stats Section */}
+          <div className="about-stats">
+            <div className="about-stats__item">
+              <div className="about-stats__number">1M+</div>
+              <div className="about-stats__label">Active Members</div>
+            </div>
+            <div className="about-stats__item">
+              <div className="about-stats__number">10K+</div>
+              <div className="about-stats__label">Curated Titles</div>
+            </div>
+            <div className="about-stats__item">
+              <div className="about-stats__number">150+</div>
+              <div className="about-stats__label">Countries</div>
+            </div>
+            <div className="about-stats__item">
+              <div className="about-stats__number">4.9★</div>
+              <div className="about-stats__label">User Rating</div>
+            </div>
+          </div>
+
+          {/* Values Section */}
+          <div className="about-values">
+            <div className="about-values__header">
+              <span className="eyebrow">OUR VALUES</span>
+              <h2>What we stand for</h2>
+            </div>
+            <div className="about-values__grid">
+              <div className="value-card">
+                <div className="value-card__icon">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <h3>Quality First</h3>
+                <p>
+                  We'd rather have 100 great titles than 10,000 mediocre ones.
+                  Every addition is deliberate.
+                </p>
+              </div>
+              <div className="value-card">
+                <div className="value-card__icon">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M22 11.08V12a10 10 0 11-5.93-9.14"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M22 4L12 14.01l-3-3"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <h3>User Respect</h3>
+                <p>
+                  No dark patterns, no data mining, no manipulation. Your
+                  privacy and time matter to us.
+                </p>
+              </div>
+              <div className="value-card">
+                <div className="value-card__icon">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <circle
+                      cx="9"
+                      cy="7"
+                      r="4"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <h3>Community</h3>
+                <p>
+                  Cinema is better together. We're building a community of
+                  passionate viewers who appreciate the art.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <div className="about-cta">
+            <h2>Ready to experience the difference?</h2>
+            <p>
+              Join millions of viewers who've rediscovered the joy of great
+              storytelling.
+            </p>
+            <div className="about-cta__buttons">
+              <button
+                className="button button--primary"
+                onClick={() => navigate("/signup")}
+                type="button"
+              >
+                <span className="button__play">
+                  <svg viewBox="0 0 12 12" fill="none">
+                    <path d="M4 2.5v7L9.5 6 4 2.5Z" fill="currentColor" />
+                  </svg>
+                </span>
+                <span>Start your free trial</span>
+                <svg
+                  aria-hidden="true"
+                  className="button__arrow"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M4 10h11m-4-4 4 4-4 4"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.4"
+                  />
                 </svg>
-              </span>
-              <span>Get started</span>
-              <svg aria-hidden="true" className="button__arrow" fill="none" viewBox="0 0 20 20">
-                <path d="M4 10h11m-4-4 4 4-4 4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.4" />
-              </svg>
-            </Link>
+              </button>
+              <button
+                className="button button--secondary"
+                onClick={() => navigate("/movies")}
+                type="button"
+              >
+                Browse catalog
+              </button>
+            </div>
+            <p className="about-cta__note">
+              14-day free trial • No credit card required • Cancel anytime
+            </p>
           </div>
         </section>
       </main>

@@ -62,7 +62,14 @@ function MoviesPage() {
     }
 
     return filtered;
-  }, [normalizedQuery, selectedGenre, selectedType, selectedYear, sortBy, allContent]);
+  }, [
+    normalizedQuery,
+    selectedGenre,
+    selectedType,
+    selectedYear,
+    sortBy,
+    allContent,
+  ]);
 
   const totalPages = Math.ceil(visibleMovies.length / ITEMS_PER_PAGE);
   const paginatedMovies = useMemo(() => {
@@ -180,8 +187,18 @@ function MoviesPage() {
                 <option value="film">Movies Only</option>
                 <option value="series">Series Only</option>
               </select>
-              <svg className="filter-select__icon" viewBox="0 0 24 24" fill="none">
-                <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <svg
+                className="filter-select__icon"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M6 9l6 6 6-6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </div>
 
@@ -200,8 +217,18 @@ function MoviesPage() {
                     </option>
                   ))}
               </select>
-              <svg className="filter-select__icon" viewBox="0 0 24 24" fill="none">
-                <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <svg
+                className="filter-select__icon"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M6 9l6 6 6-6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </div>
 
@@ -220,8 +247,18 @@ function MoviesPage() {
                     </option>
                   ))}
               </select>
-              <svg className="filter-select__icon" viewBox="0 0 24 24" fill="none">
-                <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <svg
+                className="filter-select__icon"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M6 9l6 6 6-6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </div>
 
@@ -232,7 +269,12 @@ function MoviesPage() {
                 type="button"
               >
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <path
+                    d="M6 6l12 12M18 6L6 18"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
                 </svg>
                 Clear all
               </button>
@@ -241,8 +283,17 @@ function MoviesPage() {
 
           <div className="filter-navbar__actions">
             <div className="filter-select filter-select--sort">
-              <svg className="filter-select__icon-left" viewBox="0 0 24 24" fill="none">
-                <path d="M3 6h18M7 12h10M11 18h2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <svg
+                className="filter-select__icon-left"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M3 6h18M7 12h10M11 18h2"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
               </svg>
               <select
                 value={sortBy}
@@ -253,8 +304,18 @@ function MoviesPage() {
                 <option value="rating">Top Rated</option>
                 <option value="title">A-Z</option>
               </select>
-              <svg className="filter-select__icon" viewBox="0 0 24 24" fill="none">
-                <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <svg
+                className="filter-select__icon"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M6 9l6 6 6-6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </div>
 
@@ -274,10 +335,42 @@ function MoviesPage() {
                 type="button"
               >
                 <svg viewBox="0 0 24 24" fill="none">
-                  <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
-                  <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
-                  <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
-                  <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+                  <rect
+                    x="3"
+                    y="3"
+                    width="7"
+                    height="7"
+                    rx="1.5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
+                  <rect
+                    x="14"
+                    y="3"
+                    width="7"
+                    height="7"
+                    rx="1.5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
+                  <rect
+                    x="3"
+                    y="14"
+                    width="7"
+                    height="7"
+                    rx="1.5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
+                  <rect
+                    x="14"
+                    y="14"
+                    width="7"
+                    height="7"
+                    rx="1.5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
                 </svg>
               </button>
               <button
@@ -288,8 +381,24 @@ function MoviesPage() {
                 type="button"
               >
                 <svg viewBox="0 0 24 24" fill="none">
-                  <rect x="3" y="4" width="18" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
-                  <rect x="3" y="15" width="18" height="5" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+                  <rect
+                    x="3"
+                    y="4"
+                    width="18"
+                    height="5"
+                    rx="1.5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
+                  <rect
+                    x="3"
+                    y="15"
+                    width="18"
+                    height="5"
+                    rx="1.5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
                 </svg>
               </button>
             </div>
@@ -307,7 +416,12 @@ function MoviesPage() {
               >
                 <span>{pill.label}</span>
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <path
+                    d="M6 6l12 12M18 6L6 18"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
                 </svg>
               </button>
             ))}
@@ -326,9 +440,25 @@ function MoviesPage() {
             </p>
 
             <div className="movies-search">
-              <svg className="movies-search__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="10.5" cy="10.5" r="7" stroke="currentColor" strokeWidth="2" />
-                <path d="m16 16 5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <svg
+                className="movies-search__icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <circle
+                  cx="10.5"
+                  cy="10.5"
+                  r="7"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+                <path
+                  d="m16 16 5 5"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
               </svg>
               <input
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -344,7 +474,12 @@ function MoviesPage() {
                   type="button"
                 >
                   <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    <path
+                      d="M6 6l12 12M18 6L6 18"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
                   </svg>
                 </button>
               )}
@@ -354,13 +489,11 @@ function MoviesPage() {
           <div className="collection-content">
             {paginatedMovies.length > 0 ? (
               <>
-                <div className={`movie-grid movie-grid--catalog${viewMode === "list" ? " movie-grid--list" : ""}`}>
+                <div
+                  className={`movie-grid movie-grid--catalog${viewMode === "list" ? " movie-grid--list" : ""}`}
+                >
                   {paginatedMovies.map((movie, index) => (
-                    <MovieCard
-                      index={index}
-                      key={movie.id}
-                      movie={movie}
-                    />
+                    <MovieCard index={index} key={movie.id} movie={movie} />
                   ))}
                 </div>
 
@@ -373,7 +506,13 @@ function MoviesPage() {
                       aria-label="Previous page"
                     >
                       <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path
+                          d="M15 18l-6-6 6-6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                     </button>
 
@@ -385,7 +524,9 @@ function MoviesPage() {
                             className={`pagination__page ${page === currentPage ? "pagination__page--active" : ""}`}
                             onClick={() => handlePageChange(page)}
                             aria-label={`Page ${page}`}
-                            aria-current={page === currentPage ? "page" : undefined}
+                            aria-current={
+                              page === currentPage ? "page" : undefined
+                            }
                           >
                             {page}
                           </button>
@@ -400,7 +541,13 @@ function MoviesPage() {
                       aria-label="Next page"
                     >
                       <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path
+                          d="M9 18l6-6-6-6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -409,11 +556,26 @@ function MoviesPage() {
             ) : (
               <div className="empty-state">
                 <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
-                  <circle cx="28" cy="28" r="20" stroke="currentColor" strokeWidth="2" />
-                  <path d="M44 44l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <circle
+                    cx="28"
+                    cy="28"
+                    r="20"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d="M44 44l12 12"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
                 </svg>
                 <p>No content matches your filters.</p>
-                <button className="empty-state__btn" onClick={clearFilters} type="button">
+                <button
+                  className="empty-state__btn"
+                  onClick={clearFilters}
+                  type="button"
+                >
                   Reset filters
                 </button>
               </div>

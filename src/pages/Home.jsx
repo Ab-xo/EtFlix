@@ -30,9 +30,7 @@ function Home() {
   const topRatedShows = [...trendingShows]
     .sort((a, b) => b.rating - a.rating)
     .slice(0, 12);
-  const classicsSection = trendingMovies.filter(
-    (movie) => movie.year < 2010,
-  );
+  const classicsSection = trendingMovies.filter((movie) => movie.year < 2010);
 
   useLayoutEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
@@ -105,14 +103,27 @@ function Home() {
         <section className="feature-strip">
           <div className="feature-strip__item">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6L12 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+              <path
+                d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6L12 2z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
             </svg>
             <span>Handpicked daily</span>
           </div>
           <div className="feature-strip__divider" />
           <div className="feature-strip__item">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" strokeWidth="1.5" />
+              <rect
+                x="3"
+                y="5"
+                width="18"
+                height="14"
+                rx="3"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
               <path d="M10 9l5 3-5 3V9z" fill="currentColor" />
             </svg>
             <span>No autoplay noise</span>
@@ -120,8 +131,19 @@ function Home() {
           <div className="feature-strip__divider" />
           <div className="feature-strip__item">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 3v18m-9-9h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" />
+              <path
+                d="M12 3v18m-9-9h18"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              <circle
+                cx="12"
+                cy="12"
+                r="9"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
             </svg>
             <span>Watch on any device</span>
           </div>
@@ -139,15 +161,35 @@ function Home() {
             </div>
           </div>
 
-          <MovieSection movies={trendingSection} title="Trending Now" variant="carousel" />
+          <MovieSection
+            movies={trendingSection}
+            title="Trending Now"
+            variant="carousel"
+          />
 
-          <MovieSection movies={newReleaseSection} title="New Releases" variant="carousel" />
+          <MovieSection
+            movies={newReleaseSection}
+            title="New Releases"
+            variant="carousel"
+          />
 
-          <MovieSection movies={topRatedFilms} title="Top Rated Films" variant="carousel" />
+          <MovieSection
+            movies={topRatedFilms}
+            title="Top Rated Films"
+            variant="carousel"
+          />
 
-          <MovieSection movies={topRatedShows} title="Top Rated Series" variant="carousel" />
+          <MovieSection
+            movies={topRatedShows}
+            title="Top Rated Series"
+            variant="carousel"
+          />
 
-          <MovieSection movies={classicsSection} title="Timeless Classics" variant="carousel" />
+          <MovieSection
+            movies={classicsSection}
+            title="Timeless Classics"
+            variant="carousel"
+          />
 
           <MovieSection movies={popularSection} title="Popular Picks" />
         </section>

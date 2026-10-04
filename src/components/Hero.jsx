@@ -88,7 +88,9 @@ function Hero({ movies }) {
         <span className="hero__label">
           <span aria-hidden="true" className="hero__label-line" />
           ETFLIX SPOTLIGHT
-          <span aria-hidden="true" className="hero__label-divider">/</span>
+          <span aria-hidden="true" className="hero__label-divider">
+            /
+          </span>
           {String(activeIndex + 1).padStart(2, "0")}
         </span>
 
@@ -113,14 +115,22 @@ function Hero({ movies }) {
               </svg>
             </span>
             <span>Explore the collection</span>
-            <svg aria-hidden="true" className="button__arrow" fill="none" viewBox="0 0 20 20">
+            <svg
+              aria-hidden="true"
+              className="button__arrow"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
               <path d="M4 10h11m-4-4 4 4-4 4" />
             </svg>
           </a>
         </div>
       </div>
 
-      <div aria-label="Featured film carousel controls" className="hero__controls">
+      <div
+        aria-label="Featured film carousel controls"
+        className="hero__controls"
+      >
         <div className="hero__pagination">
           <span className="hero__current-index">
             {String(activeIndex + 1).padStart(2, "0")}

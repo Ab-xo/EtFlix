@@ -8,11 +8,17 @@ function MovieSection({ title, movies, variant = "grid" }) {
     const scrollByDir = (dir) => {
       const container = scrollRef.current;
       if (!container) return;
-      container.scrollBy({ left: dir * container.clientWidth * 0.8, behavior: "smooth" });
+      container.scrollBy({
+        left: dir * container.clientWidth * 0.8,
+        behavior: "smooth",
+      });
     };
 
     return (
-      <section aria-label={title} className="movie-section movie-section--carousel">
+      <section
+        aria-label={title}
+        className="movie-section movie-section--carousel"
+      >
         <div className="movie-section__header">
           <h2>{title}</h2>
           <div className="movie-section__carousel-controls">
@@ -23,7 +29,13 @@ function MovieSection({ title, movies, variant = "grid" }) {
               type="button"
             >
               <svg viewBox="0 0 24 24" fill="none">
-                <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M15 18l-6-6 6-6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
             <button
@@ -33,7 +45,13 @@ function MovieSection({ title, movies, variant = "grid" }) {
               type="button"
             >
               <svg viewBox="0 0 24 24" fill="none">
-                <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="M9 18l6-6-6-6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </button>
           </div>
@@ -41,11 +59,7 @@ function MovieSection({ title, movies, variant = "grid" }) {
 
         <div className="movie-carousel" ref={scrollRef}>
           {movies.map((movie, index) => (
-            <MovieCard
-              index={index}
-              key={movie.id}
-              movie={movie}
-            />
+            <MovieCard index={index} key={movie.id} movie={movie} />
           ))}
         </div>
       </section>
@@ -65,11 +79,7 @@ function MovieSection({ title, movies, variant = "grid" }) {
 
       <div className="movie-grid">
         {movies.map((movie, index) => (
-          <MovieCard
-            index={index}
-            key={movie.id}
-            movie={movie}
-          />
+          <MovieCard index={index} key={movie.id} movie={movie} />
         ))}
       </div>
     </section>
