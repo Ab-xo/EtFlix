@@ -1,12 +1,9 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../components/Navbar";
 import MovieCard from "../components/MovieCard";
 import { trendingMovies, trendingShows } from "../data/movie";
 import Footer from "../components/Footer";
-
-gsap.registerPlugin(ScrollTrigger);
 
 function MoviesPage() {
   const pageRef = useRef(null);
@@ -142,11 +139,7 @@ function MoviesPage() {
         y: 26,
         duration: 0.65,
         ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".movies-page-content",
-          start: "top 78%",
-          once: true,
-        },
+        delay: 0.15,
       });
     }, pageRef);
 

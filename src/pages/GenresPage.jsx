@@ -1,12 +1,9 @@
 import { useRef, useLayoutEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { trendingMovies, trendingShows } from "../data/movie";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const genreMeta = [
   { name: "Action", icon: "bolt", accent: "#ff6b35" },
@@ -104,11 +101,6 @@ function GenresPage() {
         stagger: 0.07,
         ease: "power2.out",
         delay: 0.4,
-        scrollTrigger: {
-          trigger: ".genres-grid",
-          start: "top 80%",
-          once: true,
-        },
       });
     }, pageRef);
 

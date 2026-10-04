@@ -1,12 +1,9 @@
 import { useRef, useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { heroMovies } from "../data/movie";
-
-gsap.registerPlugin(ScrollTrigger);
 
 function AboutPage() {
   const pageRef = useRef(null);
@@ -39,11 +36,6 @@ function AboutPage() {
         stagger: 0.15,
         ease: "power2.out",
         delay: 0.2,
-        scrollTrigger: {
-          trigger: ".about-features",
-          start: "top 78%",
-          once: true,
-        },
       });
       gsap.from(".about-timeline__item", {
         opacity: 0,
@@ -51,11 +43,7 @@ function AboutPage() {
         duration: 0.6,
         stagger: 0.12,
         ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".about-timeline",
-          start: "top 80%",
-          once: true,
-        },
+        delay: 0.4,
       });
       gsap.from(".about-cta-premium > *", {
         opacity: 0,
@@ -63,11 +51,7 @@ function AboutPage() {
         duration: 0.6,
         stagger: 0.1,
         ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".about-cta-premium",
-          start: "top 82%",
-          once: true,
-        },
+        delay: 0.5,
       });
     }, pageRef);
 
