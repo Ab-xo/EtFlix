@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getMovieDetails } from "../services/tmdb";
 import MovieCard from "../components/MovieCard";
+import VideoPlayer from "../components/VideoPlayer";
 
 function MovieDetailPage() {
   const { id } = useParams();
@@ -11,6 +12,7 @@ function MovieDetailPage() {
   const [error, setError] = useState(null);
   const [selectedTab, setSelectedTab] = useState("overview");
   const [showTrailerModal, setShowTrailerModal] = useState(false);
+  const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [isWatchlisted, setIsWatchlisted] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
 
@@ -83,6 +85,11 @@ function MovieDetailPage() {
 
   return (
     <div className="movie-detail">
+      {/* Video Player Modal */}
+      {showVideoPlayer && (
+        <VideoPlayer movie={movie} onClose={() => setShowVideoPlayer(false)} />
+      )}
+
       {/* Trailer Modal with Movie Backdrop */}
       {showTrailerModal && movie.trailer && (
         <div
@@ -275,15 +282,32 @@ function MovieDetailPage() {
             </div>
 
             <div className="movie-detail__actions">
+              <button
+                className="button button--primary button--large"
+                onClick={() => setShowVideoPlayer(true)}
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                Watch Now
+              </button>
               {movie.trailer && (
                 <button
-                  className="button button--primary button--large"
+                  className="button button--secondary button--large"
                   onClick={() => setShowTrailerModal(true)}
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8 5v14l11-7z" />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeWidth="2"
+                    />
+                    <path d="M10 8l6 4-6 4V8z" />
                   </svg>
-                  Watch Trailer
+                  Trailer
                 </button>
               )}
               <button
@@ -306,7 +330,7 @@ function MovieDetailPage() {
                     <path d="M12 4.5v15m-7.5-7.5h15" strokeLinecap="round" />
                   )}
                 </svg>
-                {isWatchlisted ? "In Watchlist" : "Add to Watchlist"}
+                {isWatchlisted ? "In Watchlist" : "Watchlist"}
               </button>
               <button
                 className={`button button--icon button--large ${isFavorited ? "is-active" : ""}`}
