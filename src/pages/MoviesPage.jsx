@@ -46,63 +46,79 @@ function MoviesPage() {
         setLoading(true);
         setError(null);
 
-        let result;
+        // Always use discover API for consistent filtering
+        const filters = {
+          page: currentPage,
+          sortBy: sortBy,
+          minVoteCount: 50, // Base quality threshold
+        };
 
-        // Use category-specific endpoints or discover API
+        // Category-specific date ranges and thresholds
+        const today = new Date();
+        const todayStr = today.toISOString().split("T")[0];
+
         if (selectedCategory === "trending") {
-          const data = await tmdb.getQualityTrending(currentPage);
-          result = {
-            results: data,
-            totalPages: 10,
-            totalResults: data.length * 10,
-            page: currentPage,
-          };
+          // Trending: Last 60 days, high popularity, good rating
+          const sixtyDaysAgo = new Date(today);
+          sixtyDaysAgo.setDate(today.getDate() - 60);
+          filters.releaseDateGte = sixtyDaysAgo.toISOString().split("T")[0];
+          filters.releaseDateLte = todayStr;
+          filters.sortBy = "popularity.desc";
+          filters.minVoteCount = 100;
+          filters.minRating = 6.0;
         } else if (selectedCategory === "inCinemas") {
-          const data = await tmdb.getPopularInCinemas(currentPage);
-          result = {
-            results: data,
-            totalPages: 10,
-            totalResults: data.length * 10,
-            page: currentPage,
-          };
+          // In Cinemas: Last 45 days, theatrical release
+          const fortyFiveDaysAgo = new Date(today);
+          fortyFiveDaysAgo.setDate(today.getDate() - 45);
+          filters.releaseDateGte = fortyFiveDaysAgo.toISOString().split("T")[0];
+          filters.releaseDateLte = todayStr;
+          filters.withReleaseType = 3; // Theatrical
+          filters.sortBy = "popularity.desc";
+          filters.minVoteCount = 50;
         } else if (selectedCategory === "comingSoon") {
-          const data = await tmdb.getComingSoon(currentPage);
-          result = {
-            results: data,
-            totalPages: 10,
-            totalResults: data.length * 10,
-            page: currentPage,
-          };
-        } else {
-          // Use discover API with filters
-          const filters = {
-            page: currentPage,
-            sortBy: sortBy,
-            minVoteCount: 50, // Quality threshold
-          };
-
-          // Add category-specific filters
-          if (selectedCategory === "popular") {
-            filters.minVoteCount = 200;
-            filters.minRating = 6.0;
-          } else if (selectedCategory === "topRated") {
-            filters.sortBy = "vote_average.desc";
-            filters.minVoteCount = 500;
-            filters.minRating = 7.0;
-          }
-
-          // Add genre filter
-          if (selectedGenre !== "all") {
-            filters.genreIds = selectedGenre;
-          }
-
-          // Add year filter
-          if (selectedYear !== "all") {
-            filters.year = parseInt(selectedYear);
-          }
-
-          result = await tmdb.discoverMovies(filters);
+          // Coming Soon: Future releases up to 6 months
+          const sixMonthsLater = new Date(today);
+          sixMonthsLater.setMonth(today.getMonth() + 6);
+          filters.releaseDateGte = todayStr;
+          filters.releaseDateLte = sixMonthsLater.toISOString().split("T")[0];
+          filters.sortBy = "popularity.desc";
+        } else if (selectedCategory === "popular") {
+          // Popular: High quality, any time
+          filters.sortBy = "popularity.desc";
+          filters.minVoteCount = 200;
+          filters.minRating = 6.0;
+        } else if (selectedCategory === "topRated") {
+          // Top Rated: Best movies ever
+          filters.sortBy = "vote_average.desc";
+          filters.minVoteCount = 500;
+          filters.minRating = 7.0;
         }
+
+        // Add genre filter (works with all categories)
+        if (selectedGenre !== "all") {
+          filters.genreIds = selectedGenre;
+        }
+
+        // Add year filter (works with all categories except date-range specific ones)
+        if (selectedYear !== "all") {
+          const yearNum = parseInt(selectedYear);
+          // For date-specific categories, override date filters with year
+          if (
+            selectedCategory === "trending" ||
+            selectedCategory === "inCinemas" ||
+            selectedCategory === "comingSoon"
+          ) {
+            // Override: Use full year instead of date range
+            filters.releaseDateGte = `${yearNum}-01-01`;
+            filters.releaseDateLte = `${yearNum}-12-31`;
+            delete filters.withReleaseType; // Remove release type constraint for historical years
+          } else {
+            // For other categories, use primary_release_year
+            filters.year = yearNum;
+          }
+        }
+
+        const result = await tmdb.discoverMovies(filters);
 
         setMovies(result.results);
         setTotalPages(result.totalPages);
