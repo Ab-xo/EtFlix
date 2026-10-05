@@ -253,7 +253,7 @@
 .movie-detail__hero {
   position: relative;
   width: 100%;
-  min-height: 90vh;
+  min-height: 75vh;
   overflow: hidden;
 }
 

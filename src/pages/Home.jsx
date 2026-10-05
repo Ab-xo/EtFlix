@@ -30,23 +30,23 @@ function Home() {
         setLoading(true);
         setError(null);
 
-        // Fetch all categories from TMDB
-        const [trending, nowPlaying, topRated, popular, upcoming] =
+        // Fetch all categories from TMDB with quality filters
+        const [trending, inCinemas, popular, comingSoon, topRated] =
           await Promise.all([
-            tmdb.getTrending("movie", "week"),
-            tmdb.getNowPlayingMovies(1),
-            tmdb.getTopRatedMovies(1),
-            tmdb.getPopularMovies(1),
-            tmdb.getUpcomingMovies(1),
+            tmdb.getQualityTrending(1), // Trending with vote_count > 100
+            tmdb.getPopularInCinemas(1), // In theaters (last 30 days, theatrical release)
+            tmdb.getQualityPopular(1), // Popular with vote_count > 200, rating > 6.0
+            tmdb.getComingSoon(1), // Upcoming (next 6 months, theatrical)
+            tmdb.getTopRatedMovies(1), // Top rated classics
           ]);
 
         setMovieData({
           hero: trending.slice(0, 5), // Top 5 trending for hero
-          trending: trending.slice(0, 20),
-          nowPlaying: nowPlaying.slice(0, 20),
-          topRated: topRated.slice(0, 20),
-          popular: popular.slice(0, 20),
-          upcoming: upcoming.slice(0, 20),
+          trending: trending.slice(0, 20), // Trending This Week
+          nowPlaying: inCinemas.slice(0, 20), // In Cinemas Now
+          topRated: topRated.slice(0, 20), // Top Rated
+          popular: popular.slice(0, 20), // Popular (High Quality)
+          upcoming: comingSoon.slice(0, 20), // Coming Soon
         });
         setLoading(false);
       } catch (err) {
@@ -243,13 +243,7 @@ function Home() {
 
           <MovieSection
             movies={movieData.nowPlaying}
-            title="Now Playing in Theaters"
-            variant="carousel"
-          />
-
-          <MovieSection
-            movies={movieData.topRated}
-            title="Top Rated Films"
+            title="In Cinemas Now"
             variant="carousel"
           />
 
@@ -262,6 +256,12 @@ function Home() {
           <MovieSection
             movies={movieData.upcoming}
             title="Coming Soon"
+            variant="carousel"
+          />
+
+          <MovieSection
+            movies={movieData.topRated}
+            title="Top Rated Classics"
             variant="carousel"
           />
         </section>

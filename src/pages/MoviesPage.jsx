@@ -9,58 +9,104 @@ function MoviesPage() {
   const pageRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("all");
-  const [selectedType, setSelectedType] = useState("popular"); // popular, topRated, nowPlaying, upcoming
+  const [selectedCategory, setSelectedCategory] = useState("popular");
   const [selectedYear, setSelectedYear] = useState("all");
-  const [sortBy, setSortBy] = useState("popularity");
+  const [sortBy, setSortBy] = useState("popularity.desc");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [allMovies, setAllMovies] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [genreList, setGenreList] = useState([]);
+  const [availableYears, setAvailableYears] = useState([]);
 
-  const ITEMS_PER_PAGE = 20;
-
-  // Fetch genres on mount
+  // Fetch genres and years on mount
   useEffect(() => {
-    const fetchGenres = async () => {
+    const fetchInitialData = async () => {
       try {
-        const genres = await tmdb.getGenres();
+        const [genres, years] = await Promise.all([
+          tmdb.getGenres(),
+          Promise.resolve(tmdb.getAvailableYears()),
+        ]);
         setGenreList(genres);
+        setAvailableYears(years);
       } catch (err) {
-        console.error("Failed to fetch genres:", err);
+        console.error("Failed to fetch initial data:", err);
       }
     };
-    fetchGenres();
+    fetchInitialData();
   }, []);
 
-  // Fetch movies based on selected type
+  // Fetch movies based on filters
   useEffect(() => {
     const fetchMovies = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        let movies = [];
+        let result;
 
-        switch (selectedType) {
-          case "popular":
-            movies = await tmdb.getPopularMovies(currentPage);
-            break;
-          case "topRated":
-            movies = await tmdb.getTopRatedMovies(currentPage);
-            break;
-          case "nowPlaying":
-            movies = await tmdb.getNowPlayingMovies(currentPage);
-            break;
-          case "upcoming":
-            movies = await tmdb.getUpcomingMovies(currentPage);
-            break;
-          default:
-            movies = await tmdb.getPopularMovies(currentPage);
+        // Use category-specific endpoints or discover API
+        if (selectedCategory === "trending") {
+          const data = await tmdb.getQualityTrending(currentPage);
+          result = {
+            results: data,
+            totalPages: 10,
+            totalResults: data.length * 10,
+            page: currentPage,
+          };
+        } else if (selectedCategory === "inCinemas") {
+          const data = await tmdb.getPopularInCinemas(currentPage);
+          result = {
+            results: data,
+            totalPages: 10,
+            totalResults: data.length * 10,
+            page: currentPage,
+          };
+        } else if (selectedCategory === "comingSoon") {
+          const data = await tmdb.getComingSoon(currentPage);
+          result = {
+            results: data,
+            totalPages: 10,
+            totalResults: data.length * 10,
+            page: currentPage,
+          };
+        } else {
+          // Use discover API with filters
+          const filters = {
+            page: currentPage,
+            sortBy: sortBy,
+            minVoteCount: 50, // Quality threshold
+          };
+
+          // Add category-specific filters
+          if (selectedCategory === "popular") {
+            filters.minVoteCount = 200;
+            filters.minRating = 6.0;
+          } else if (selectedCategory === "topRated") {
+            filters.sortBy = "vote_average.desc";
+            filters.minVoteCount = 500;
+            filters.minRating = 7.0;
+          }
+
+          // Add genre filter
+          if (selectedGenre !== "all") {
+            filters.genreIds = selectedGenre;
+          }
+
+          // Add year filter
+          if (selectedYear !== "all") {
+            filters.year = parseInt(selectedYear);
+          }
+
+          result = await tmdb.discoverMovies(filters);
         }
 
-        setAllMovies(movies);
+        setMovies(result.results);
+        setTotalPages(result.totalPages);
+        setTotalResults(result.totalResults);
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch movies:", err);
@@ -70,49 +116,26 @@ function MoviesPage() {
     };
 
     fetchMovies();
-  }, [selectedType, currentPage]);
+  }, [selectedCategory, selectedGenre, selectedYear, sortBy, currentPage]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedGenre, selectedType, selectedYear, sortBy, searchQuery]);
-
-  const normalizedQuery = searchQuery.trim().toLowerCase();
-
-  const years = useMemo(() => {
-    const yearSet = new Set(allMovies.map((item) => item.year).filter(Boolean));
-    return ["all", ...Array.from(yearSet).sort((a, b) => b - a)];
-  }, [allMovies]);
-
-  const visibleMovies = useMemo(() => {
-    let filtered = allMovies.filter((movie) => {
-      const matchesGenre =
-        selectedGenre === "all" ||
-        (movie.genre && movie.genre.includes(selectedGenre));
-
-      const matchesYear =
-        selectedYear === "all" || movie.year === parseInt(selectedYear);
-
-      const matchesSearch =
-        !normalizedQuery || movie.title.toLowerCase().includes(normalizedQuery);
-
-      return matchesGenre && matchesYear && matchesSearch;
-    });
-
-    // Apply sorting
-    if (sortBy === "title") {
-      filtered.sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortBy === "rating") {
-      filtered.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
-    } else if (sortBy === "year") {
-      filtered.sort((a, b) => b.year - a.year);
+    if (currentPage !== 1) {
+      setCurrentPage(1);
     }
-    // Default is popularity (already sorted from API)
+  }, [selectedGenre, selectedCategory, selectedYear, sortBy]);
 
-    return filtered;
-  }, [allMovies, normalizedQuery, selectedGenre, selectedYear, sortBy]);
+  // Client-side search filter
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const visibleMovies = useMemo(() => {
+    if (!normalizedQuery) return movies;
+    return movies.filter((movie) =>
+      movie.title.toLowerCase().includes(normalizedQuery),
+    );
+  }, [movies, normalizedQuery]);
 
   const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -166,17 +189,18 @@ function MoviesPage() {
         <div className="filter-navbar__container">
           {/* Left: Filters */}
           <div className="filter-navbar__filters">
-            {/* Type Select */}
+            {/* Category Select */}
             <div className="filter-select">
               <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
                 className="filter-select__control"
               >
                 <option value="popular">Popular</option>
+                <option value="trending">Trending</option>
                 <option value="topRated">Top Rated</option>
-                <option value="nowPlaying">Now Playing</option>
-                <option value="upcoming">Upcoming</option>
+                <option value="inCinemas">In Cinemas</option>
+                <option value="comingSoon">Coming Soon</option>
               </select>
               <svg
                 className="filter-select__icon"
@@ -230,13 +254,11 @@ function MoviesPage() {
                 className="filter-select__control"
               >
                 <option value="all">All Years</option>
-                {years
-                  .filter((y) => y !== "all")
-                  .map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
+                {availableYears.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
               </select>
               <svg
                 className="filter-select__icon"
@@ -275,10 +297,11 @@ function MoviesPage() {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="filter-select__control"
               >
-                <option value="popularity">Most Popular</option>
-                <option value="rating">Top Rated</option>
-                <option value="year">Latest</option>
-                <option value="title">A-Z</option>
+                <option value="popularity.desc">Most Popular</option>
+                <option value="vote_average.desc">Top Rated</option>
+                <option value="release_date.desc">Latest Release</option>
+                <option value="title.asc">A-Z</option>
+                <option value="revenue.desc">Highest Grossing</option>
               </select>
               <svg
                 className="filter-select__icon"
@@ -298,7 +321,9 @@ function MoviesPage() {
             {/* Results Count */}
             <div className="filter-results">
               <span className="filter-results__count">
-                {visibleMovies.length}
+                {totalResults > 0
+                  ? totalResults.toLocaleString()
+                  : visibleMovies.length}
               </span>
               <span className="filter-results__label">results</span>
             </div>
@@ -332,8 +357,8 @@ function MoviesPage() {
             ) : visibleMovies.length > 0 ? (
               <>
                 <div className="movie-grid">
-                  {visibleMovies.map((movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
+                  {visibleMovies.map((movie, index) => (
+                    <MovieCard key={movie.id} movie={movie} index={index} />
                   ))}
                 </div>
 
@@ -355,19 +380,27 @@ function MoviesPage() {
                         strokeLinejoin="round"
                       />
                     </svg>
+                    <span>Previous</span>
                   </button>
 
                   <div className="pagination__info">
-                    <span>Page {currentPage}</span>
+                    <span className="pagination__current">
+                      Page {currentPage}
+                    </span>
+                    <span className="pagination__divider">/</span>
+                    <span className="pagination__total">
+                      {totalPages > 500 ? "500+" : totalPages}
+                    </span>
                   </div>
 
                   <button
                     className="pagination__btn pagination__btn--next"
                     onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={visibleMovies.length < ITEMS_PER_PAGE}
+                    disabled={currentPage >= totalPages || currentPage >= 500}
                     aria-label="Next page"
                     type="button"
                   >
+                    <span>Next</span>
                     <svg viewBox="0 0 24 24" fill="none">
                       <path
                         d="M9 18l6-6-6-6"
@@ -381,9 +414,25 @@ function MoviesPage() {
                 </div>
               </>
             ) : (
-              <p className="empty-state">
-                No movies match your filters. Try adjusting your selection.
-              </p>
+              <div className="empty-state">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path
+                    d="M21 21l-4.35-4.35"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <p>No movies match your filters</p>
+                <p className="empty-state__hint">
+                  Try adjusting your selection or search query
+                </p>
+              </div>
             )}
           </div>
         </section>

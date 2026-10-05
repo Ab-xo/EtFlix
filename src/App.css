@@ -3009,8 +3009,8 @@
    ========================================================= */
 
 .hero {
-  min-height: clamp(680px, 88vh, 860px);
-  height: min(900px, 92vh);
+  min-height: clamp(600px, 75vh, 750px);
+  height: min(780px, 78vh);
   background:
     radial-gradient(circle at 72% 45%, rgb(184 239 97 / 5%), transparent 32%),
     #0b0c0a;
