@@ -83,38 +83,89 @@ function MovieDetailPage() {
 
   return (
     <div className="movie-detail">
-      {/* Trailer Modal */}
+      {/* Trailer Modal with Movie Backdrop */}
       {showTrailerModal && movie.trailer && (
         <div
           className="movie-detail__modal-overlay"
           onClick={() => setShowTrailerModal(false)}
         >
+          {/* Backdrop Background */}
+          <div
+            className="movie-detail__modal-backdrop"
+            style={{ backgroundImage: `url("${movie.backdrop}")` }}
+          />
+          <div className="movie-detail__modal-backdrop-overlay" />
+          <div className="movie-detail__modal-backdrop-grain" />
+
+          {/* Video Player Container */}
           <div
             className="movie-detail__modal-content"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              className="movie-detail__modal-close"
-              onClick={() => setShowTrailerModal(false)}
-              aria-label="Close trailer"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+            <div className="movie-detail__modal-header">
+              <div className="movie-detail__modal-info">
+                <h2>{movie.title}</h2>
+                <span className="movie-detail__modal-label">
+                  Official Trailer
+                </span>
+              </div>
+              <button
+                className="movie-detail__modal-close"
+                onClick={() => setShowTrailerModal(false)}
+                aria-label="Close trailer"
               >
-                <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
-              </svg>
-            </button>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+
             <div className="movie-detail__video-wrapper">
               <iframe
-                src={`https://www.youtube.com/embed/${movie.trailer.key}?autoplay=1&rel=0&modestbranding=1`}
+                src={`https://www.youtube.com/embed/${movie.trailer.key}?autoplay=1&rel=0&modestbranding=1&controls=1`}
                 title={movie.trailer.name}
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
               />
+            </div>
+
+            <div className="movie-detail__modal-meta">
+              <div className="movie-detail__modal-meta-item">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                <span>{movie.rating}/10</span>
+              </div>
+              <div className="movie-detail__modal-meta-item">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
+                <span>{movie.year}</span>
+              </div>
+              <div className="movie-detail__modal-meta-item">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+                <span>{formatRuntime(movie.runtime)}</span>
+              </div>
             </div>
           </div>
         </div>
