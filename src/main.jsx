@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 
 import "./index.css";
+import "./tailwind.css";
 import "./App.css";
 import "./styles/MovieDetail.css";
 import "./styles/VideoPlayer.css";
